@@ -8,7 +8,9 @@ import math
 import random
 
 import ps3_visualize
-import pylab
+#import pylab
+import matplotlib.pyplot as plot
+import numpy as np
 
 # For python 2.7:
 from ps3_verify_movement27 import test_robot_movement
@@ -81,7 +83,11 @@ class RectangularRoom(object):
         height: an integer > 0
         dirt_amount: an integer >= 0
         """
-        raise NotImplementedError
+        self.tiles = {}
+        for y in range(0, height+1):
+            for x in range(0, width+1):
+                self.tiles[x,y] = dirt_amount
+        
     
     def clean_tile_at_position(self, pos, capacity):
         """
@@ -96,7 +102,13 @@ class RectangularRoom(object):
         Note: The amount of dirt on each tile should be NON-NEGATIVE.
               If the capacity exceeds the amount of dirt on the tile, mark it as 0.
         """
-        raise NotImplementedError
+        x,y = int(pos.get_x()), int(pos.get_y())
+        tile = self.tiles[x,y]
+        if capacity >= tile:
+            self.tiles[x,y] = 0
+        else:
+            self.tiles[x,y] = tile - capacity
+        
 
     def is_tile_cleaned(self, m, n):
         """
@@ -112,13 +124,20 @@ class RectangularRoom(object):
         Note: The tile is considered clean only when the amount of dirt on this
               tile is 0.
         """
-        raise NotImplementedError
+        if self.tiles[m,n] == 0:
+            return True
+        else:
+            return False
 
     def get_num_cleaned_tiles(self):
         """
         Returns: an integer; the total number of clean tiles in the room
         """
-        raise NotImplementedError
+        cleaned_tiles = 0
+        for tile in self.tiles:
+            if tile == 0:
+                cleaned_tiles += 1
+        return cleaned_tiles
         
     def is_position_in_room(self, pos):
         """
@@ -127,6 +146,12 @@ class RectangularRoom(object):
         pos: a Position object.
         Returns: True if pos is in the room, False otherwise.
         """
+        x,y = int(pos.get_x()), int(pos.get_y())
+        if (x,y) in self.tiles:
+            return True
+        else:
+            return False
+
         raise NotImplementedError
         
     def get_dirt_amount(self, m, n):
@@ -140,7 +165,7 @@ class RectangularRoom(object):
 
         Returns: an integer
         """
-        raise NotImplementedError
+        return self.tiles[m,n]
         
     def get_num_tiles(self):
         """
