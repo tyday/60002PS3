@@ -86,6 +86,7 @@ print('Numb of pos inside furniture: ' + str(count) + ' ' + str(count/10) + '%\n
 print('Multiple random rooms:')
 for trials in range(0,20):
     count = 0
+    validcount = 0
     width = random.randint(2,7)
     height = random.randint(2,7)
     area = (width +1) * (height + 1)
@@ -97,5 +98,13 @@ for trials in range(0,20):
         pos = room.get_random_position_any() 
         if room.is_position_furnished(pos):
             count += 1
+        if room.is_position_valid(pos):
+            validcount += 1
     percCount = round((count/1000) * 100,1)
-    print('Amount furnished: ' + str(percFurn) + '% test: ' + str(percCount))
+    percValid = round((validcount/1000)* 100,1)
+    total = percCount + percValid
+    print('Amount furnished: ' + str(percFurn) + '% test: ' \
+        + str(percCount) +'% Valid: ' +str(percValid) \
+        + '% Tot: ' + str(total) + '----' + \
+         str(room.get_num_tiles()), str(len(room.tiles)))
+    print(room.get_random_position())
