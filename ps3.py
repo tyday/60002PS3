@@ -13,7 +13,7 @@ import matplotlib.pyplot as plot
 import numpy as np
 
 # For python 2.7:
-from ps3_verify_movement27 import test_robot_movement
+# from ps3_verify_movement27 import test_robot_movement
 
 
 # === Provided class Position
@@ -83,6 +83,8 @@ class RectangularRoom(object):
         height: an integer > 0
         dirt_amount: an integer >= 0
         """
+        self.width = width
+        self.height = height
         self.tiles = {}
         for y in range(0, height+1):
             for x in range(0, width+1):
@@ -213,20 +215,45 @@ class Robot(object):
         capacity: a positive interger; the amount of dirt cleaned by the robot 
                   in a single time-step
         """
-        raise NotImplementedError
+        self.room = room
+        self.speed = speed
+        self.capacity = capacity
+
+        """ Gets a random position in the room.
+        Makes it so it can run from 0.00 to width.999"""
+        check = False
+        while check == False:
+            x = random.random() * (room.width+1)
+            y = random.random() * (room.height+1)
+            if x < room.width + 1 and y < room.height + 1:
+                check = True
+        d = random.random() * 360
+        self.pos = Position(x,y)
+        self.dir = d
+
+    def __str__(self):
+        dir = self.dir
+        dir = str(round(dir,1))
+        ret_string = '<-Robot->' + str(self.get_robot_position()) +' Dir: ' + dir
+        return ret_string
 
     def get_robot_position(self):
         """
         Returns: a Position object giving the robot's position in the room.
         """
-        raise NotImplementedError
+        return self.pos
+
+    def get_robot_true_position(self):
+        pos = self.pos
+        x,y = round(pos.get_x(),3), round(pos.get_y(),3)
+        return x,y
 
     def get_robot_direction(self):
         """
         Returns: a float d giving the direction of the robot as an angle in
         degrees, 0.0 <= d < 360.0.
         """
-        raise NotImplementedError
+        return self.dir
 
     def set_robot_position(self, position):
         """
@@ -234,7 +261,7 @@ class Robot(object):
 
         position: a Position object.
         """
-        raise NotImplementedError
+        self.pos = position
 
     def set_robot_direction(self, direction):
         """
@@ -242,7 +269,7 @@ class Robot(object):
 
         direction: float representing an angle in degrees
         """
-        raise NotImplementedError
+        self.dir = direction
 
     def update_position_and_clean(self):
         """

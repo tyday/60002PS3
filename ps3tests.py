@@ -1,3 +1,4 @@
+import unittest
 import ps3
 
 
@@ -13,3 +14,18 @@ room.clean_tile_at_position(botpos,5)
 print('1,3 after 5 more cleaning (0)',room.is_tile_cleaned(1,3))
 room.clean_tile_at_position(botpos,5)
 print('1,3 after 5 more cleaning (-5)',room.is_tile_cleaned(1,3))
+
+# create robot
+for i in range(0,15):
+    helper = ps3.Robot(room,1,1)
+    print(str(helper), str(helper.get_robot_true_position()))
+j = 0
+check = False
+while check == False:
+    j += 1
+    helper = ps3.Robot(room,1,1)
+    x,y = helper.get_robot_true_position()
+    if x > room.width or y > room.height:
+        print(str(helper), str(helper.get_robot_true_position()))
+        print(j)
+        check = True
