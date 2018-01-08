@@ -136,8 +136,8 @@ class RectangularRoom(object):
         Returns: an integer; the total number of clean tiles in the room
         """
         cleaned_tiles = 0
-        for tile in self.tiles:
-            if tile == 0:
+        for tile, value in self.tiles.items():
+            if value == 0:
                 cleaned_tiles += 1
         return cleaned_tiles
         
@@ -301,7 +301,7 @@ class EmptyRoom(RectangularRoom):
         Returns: True if pos is in the room, False otherwise.
         """
         x,y = pos.get_x(), pos.get_y()
-        if x >= 0 and x < (self.width +1) and y >= 0 and y < (self.height +1):
+        if x >= 0 and x < (self.width +1) and y >= 0 and y < (self.height+1):
             return True
         else:
             return False
@@ -395,7 +395,7 @@ class FurnishedRoom(RectangularRoom):
         if self.is_position_furnished(pos):
             return False
         x,y = pos.get_x(), pos.get_y()
-        if x >= 0 and x < (self.width +1) and y >= 0 and y < (self.height +1):
+        if x >= 0 and x < (self.width + 1) and y >= 0 and y < (self.height +1):
             return True
         else:
             return False
