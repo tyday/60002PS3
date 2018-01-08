@@ -86,8 +86,8 @@ class RectangularRoom(object):
         self.width = width
         self.height = height
         self.tiles = {}
-        for y in range(0, height+1):
-            for x in range(0, width+1):
+        for y in range(0, height):
+            for x in range(0, width):
                 self.tiles[x,y] = dirt_amount
         
     
@@ -301,7 +301,7 @@ class EmptyRoom(RectangularRoom):
         Returns: True if pos is in the room, False otherwise.
         """
         x,y = pos.get_x(), pos.get_y()
-        if x >= 0 and x < (self.width +1) and y >= 0 and y < (self.height+1):
+        if x >= 0 and x < (self.width) and y >= 0 and y < (self.height):
             return True
         else:
             return False
@@ -395,7 +395,7 @@ class FurnishedRoom(RectangularRoom):
         if self.is_position_furnished(pos):
             return False
         x,y = pos.get_x(), pos.get_y()
-        if x >= 0 and x < (self.width + 1) and y >= 0 and y < (self.height +1):
+        if x >= 0 and x < (self.width) and y >= 0 and y < (self.heigh):
             return True
         else:
             return False
