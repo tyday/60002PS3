@@ -13,7 +13,7 @@ import matplotlib.pyplot as plot
 import numpy as np
 
 # For python 2.7:
-# from ps3_verify_movement27 import test_robot_movement
+from ps3_verify_movement27 import test_robot_movement
 
 
 # === Provided class Position
@@ -460,10 +460,26 @@ class StandardRobot(Robot):
         rotate once to a random new direction, and stay stationary) and clean the dirt on the tile
         by its given capacity. 
         """
-        raise NotImplementedError
+        current_pos = self.get_robot_position()
+        speed = self.speed
+        cur_dir = self.get_robot_direction()
+        valid = False
+        
+        while valid == False:
+            potential_pos = current_pos.get_new_position(cur_dir,speed)
+            if self.room.is_position_valid(potential_pos):
+                valid = True
+            else:
+                cur_dir = random.uniform(0,360)
+
+        self.set_robot_position(potential_pos)
+        self.set_robot_direction(cur_dir)
+        x,y = math.floor(potential_pos.get_x()), math.floor(potential_pos.get_y())
+        self.room.clean_tile_at_position(potential_pos,self.capacity)
+        
 
 # Uncomment this line to see your implementation of StandardRobot in action!
-#test_robot_movement(StandardRobot, EmptyRoom)
+test_robot_movement(StandardRobot, EmptyRoom)
 #test_robot_movement(StandardRobot, FurnishedRoom)
 
 # === Problem 4
