@@ -395,7 +395,7 @@ class FurnishedRoom(RectangularRoom):
         if self.is_position_furnished(pos):
             return False
         x,y = pos.get_x(), pos.get_y()
-        if x >= 0 and x < (self.width) and y >= 0 and y < (self.heigh):
+        if x >= 0 and x < (self.width) and y >= 0 and y < (self.height):
             return True
         else:
             return False
@@ -479,8 +479,8 @@ class StandardRobot(Robot):
         
 
 # Uncomment this line to see your implementation of StandardRobot in action!
-test_robot_movement(StandardRobot, EmptyRoom)
-#test_robot_movement(StandardRobot, FurnishedRoom)
+# test_robot_movement(StandardRobot, EmptyRoom)
+# test_robot_movement(StandardRobot, FurnishedRoom)
 
 # === Problem 4
 class FaultyRobot(Robot):
@@ -520,10 +520,30 @@ class FaultyRobot(Robot):
         StandardRobot at this time-step (checking if it can move to a new position,
         move there if it can, pick a new direction and stay stationary if it can't)
         """
-        raise NotImplementedError
+        if self.gets_faulty():
+            cur_dir = random.uniform(0,360)
+            self.set_robot_direction(cur_dir)
+        
+        else:
+            current_pos = self.get_robot_position()
+            speed = self.speed
+            cur_dir = self.get_robot_direction()
+            valid = False
+            
+            while valid == False:
+                potential_pos = current_pos.get_new_position(cur_dir,speed)
+                if self.room.is_position_valid(potential_pos):
+                    valid = True
+                else:
+                    cur_dir = random.uniform(0,360)
+
+            self.set_robot_position(potential_pos)
+            self.set_robot_direction(cur_dir)
+            x,y = math.floor(potential_pos.get_x()), math.floor(potential_pos.get_y())
+            self.room.clean_tile_at_position(potential_pos,self.capacity)
         
     
-#test_robot_movement(FaultyRobot, EmptyRoom)
+test_robot_movement(FaultyRobot, EmptyRoom)
 
 # === Problem 5
 def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_coverage, num_trials,
