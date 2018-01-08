@@ -421,7 +421,7 @@ class FurnishedRoom(RectangularRoom):
         rand_tile = random.choice(valid_tiles_list)
         rx,ry = rand_tile
         valid = False
-        while valid = False:
+        while valid == False:
             x,y = random.random(), random.random()
             if x <1 and y < 1:
                 valid = True

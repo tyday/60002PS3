@@ -107,4 +107,16 @@ for trials in range(0,20):
         + str(percCount) +'% Valid: ' +str(percValid) \
         + '% Tot: ' + str(total) + '----' + \
          str(room.get_num_tiles()), str(len(room.tiles)))
-    print(room.get_random_position())
+print('\nFurnishedRoom Random position test')
+
+room = ps3.FurnishedRoom(4,4,2)
+count = 0
+err_list = []
+for i in range (1,10001):
+    pos = room.get_random_position()
+    if room.is_position_valid(pos):
+        count += 1
+    else:
+        err_list.append(str(pos))
+print('In 10000 tests ' + str(count) +' were valid')
+print(err_list)
