@@ -9,12 +9,13 @@ import random
 
 import ps3_visualize
 #import pylab
-import matplotlib.pyplot as plot
+import matplotlib.pyplot as plt
 import numpy as np
+import time
+import profile
 
 # For python 2.7:
 from ps3_verify_movement27 import test_robot_movement
-
 
 # === Provided class Position
 class Position(object):
@@ -543,7 +544,7 @@ class FaultyRobot(Robot):
             self.room.clean_tile_at_position(potential_pos,self.capacity)
         
     
-test_robot_movement(FaultyRobot, EmptyRoom)
+# test_robot_movement(FaultyRobot, EmptyRoom)
 
 # === Problem 5
 def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_coverage, num_trials,
@@ -567,15 +568,47 @@ def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_
     robot_type: class of robot to be instantiated (e.g. StandardRobot or
                 FaultyRobot)
     """
-    raise NotImplementedError
+    
+    robots = []
+    room = EmptyRoom(width, height, dirt_amount)
 
+    
 
+    tot_time = 0
+    x = 0
+    while x < num_trials:
+        x += 1 # increment number of trials
+        # create room
+        room = EmptyRoom(width, height, dirt_amount)
+        #create robots for room
+        y = 0
+        while y < num_robots:
+            robots.append(robot_type(room, 1, 1))
+            # print('built robot. tot: ', num_robots)
+            y += 1
+        coverage = 0
+        time_steps = 0
+        
+        while coverage < min_coverage:
+            time_steps += 1
+            # print(x,time_steps, coverage, min_coverage)
+            for robot in robots:
+                robot.update_position_and_clean()
+                coverage = float(room.get_num_cleaned_tiles())/room.get_num_tiles()
+
+        tot_time += time_steps
+        print(x)
+    avg_time = tot_time/ num_trials
+    return avg_time    
+
+# start = time.time()
 # print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)))
 # print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.8, 50, StandardRobot)))
 # print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.9, 50, StandardRobot)))
 # print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
 # print ('avg time steps: ' + str(run_simulation(3, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
-
+# end = time.time()
+# print (end-start)
 # === Problem 6
 #
 # ANSWER THE FOLLOWING QUESTIONS:
@@ -602,13 +635,13 @@ def show_plot_compare_strategies(title, x_label, y_label):
         print ("Plotting", num_robots, "robots...")
         times1.append(run_simulation(num_robots, 1.0, 1, 20, 20, 3, 0.8, 20, StandardRobot))
         times2.append(run_simulation(num_robots, 1.0, 1, 20, 20, 3, 0.8, 20, FaultyRobot))
-    pylab.plot(num_robot_range, times1)
-    pylab.plot(num_robot_range, times2)
-    pylab.title(title)
-    pylab.legend(('StandardRobot', 'FaultyRobot'))
-    pylab.xlabel(x_label)
-    pylab.ylabel(y_label)
-    pylab.show()
+    plt.plot(num_robot_range, times1)
+    plt.plot(num_robot_range, times2)
+    plt.title(title)
+    plt.legend(('StandardRobot', 'FaultyRobot'))
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.show()
     
 def show_plot_room_shape(title, x_label, y_label):
     """
@@ -617,20 +650,31 @@ def show_plot_room_shape(title, x_label, y_label):
     aspect_ratios = []
     times1 = []
     times2 = []
+    st = time.time()
     for width in [10, 20, 25, 50]:
-        height = 300/width
+        height = int(300/width)
         print ("Plotting cleaning time for a room of width:", width, "by height:", height)
         aspect_ratios.append(float(width) / height)
         times1.append(run_simulation(2, 1.0, 1, width, height, 3, 0.8, 200, StandardRobot))
         times2.append(run_simulation(2, 1.0, 1, width, height, 3, 0.8, 200, FaultyRobot))
-    pylab.plot(aspect_ratios, times1)
-    pylab.plot(aspect_ratios, times2)
-    pylab.title(title)
-    pylab.legend(('StandardRobot', 'FaultyRobot'))
-    pylab.xlabel(x_label)
-    pylab.ylabel(y_label)
-    pylab.show()
+    et = time.time()
+    print(et-st)
+    plt.plot(aspect_ratios, times1)
+    plt.plot(aspect_ratios, times2)
+    plt.title(title)
+    plt.legend(('StandardRobot', 'FaultyRobot'))
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.show()
 
-
-#show_plot_compare_strategies('Time to clean 80% of a 20x20 room, for various numbers of robots','Number of robots','Time / steps')
-#show_plot_room_shape('Time to clean 80% of a 300-tile room for various room shapes','Aspect Ratio', 'Time / steps')
+def main():
+        
+    start = time.time()
+    # show_plot_compare_strategies('Time to clean 80% of a 20x20 room, for various numbers of robots','Number of robots','Time / steps')
+    # show_plot_room_shape('Time to clean 80% of a 300-tile room for various room shapes','Aspect Ratio', 'Time / steps')
+    print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 10, StandardRobot)))
+    print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.8, 10, StandardRobot)))
+    end = time.time()
+    print (end-start)
+    a = input('press any key to continue')
+profile.run('main()')
